@@ -15,15 +15,34 @@ function makeGrid() {
     return grid;
 }
 
-function setup() {
-    createCanvas(2490, 1245);
+function remakeGrid() {
+    let newGrid = [];
+    for (let x = 0; x < cols; x++) {
+        newGrid[x] = [];
+        for (let y = 0; y < rows; y++) {
+            if (grid[x][y] != null) newGrid[x][y] = grid[x][y];
+            else newGrid[x][y] = 0;
+        }
+    }
+    return newGrid;
+}
 
-    cellSize = width / cols;
+function setup() {
+    // createCanvas(2490, 1245);
+    cellSize = windowWidth / cols;
+    createCanvas(windowWidth, windowHeight - cellSize * 3.5);
+
     grid = makeGrid();
-    colors[0] = color(255, 0, 255);
-    colors[1] = color(0, 255, 255);
+    colors[0] = color(168, 8, 67);
+    colors[1] = color(12, 207, 122);
 
     makeGoButton();
+}
+
+function windowResized() {
+    cellSize = windowWidth / cols;
+    grid = remakeGrid();
+    resizeCanvas(windowWidth, windowHeight - cellSize * 3.5);
 }
 
 var mode = 0;
@@ -32,12 +51,7 @@ function mousePressed() {
     if (go) return;
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
-            let distance = dist(
-                mouseX,
-                mouseY,
-                cellSize / 2 + i * cellSize,
-                cellSize / 2 + j * cellSize
-            );
+            let distance = dist(mouseX, mouseY, cellSize / 2 + i * cellSize, cellSize / 2 + j * cellSize);
             if (distance < cellSize / 2) {
                 mode = grid[i][j] == 0 ? 1 : 0;
             }
@@ -54,12 +68,7 @@ function mouseDragged() {
 function drawCell(drawMode) {
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
-            let distance = dist(
-                mouseX,
-                mouseY,
-                cellSize / 2 + i * cellSize,
-                cellSize / 2 + j * cellSize
-            );
+            let distance = dist(mouseX, mouseY, cellSize / 2 + i * cellSize, cellSize / 2 + j * cellSize);
             if (distance < cellSize / 2) {
                 grid[i][j] = drawMode;
             }
@@ -103,7 +112,7 @@ let last_done = 0;
 function draw() {
     let delay = 30; //ms
     if (!task_done) {
-        background(10);
+        background("#1b1b1b");
         noStroke();
         stroke(1);
         // rectMode(CENTER);
